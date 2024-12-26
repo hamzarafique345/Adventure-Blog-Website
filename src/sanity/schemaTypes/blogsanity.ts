@@ -17,6 +17,15 @@ export const BlogData = {
             name:"paragraph",
             type:"text",
             title:"Content f Blog",
+        },
+        {
+            name: 'slug',
+            title: 'Slug',
+            type: 'slug',
+            options: {
+              source: 'title',
+              maxLength: 96,
+            },
         }
     ]
 }

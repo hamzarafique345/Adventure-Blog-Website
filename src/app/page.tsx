@@ -1,12 +1,11 @@
 import Bestplaces from "./components/bestplaces";
 import { MyblogPage } from "./components/blogasyc";
-import { Carousel1 } from "./components/carousel";
-import Footer from "./components/footer";
 import Homepage from "./components/homepage";
 import { SocialCategory } from "./components/insta";
-import { Myblog } from "./components/myblog";
+import HomePage from "./components/myblog";
 import FeaturePage from "./components/sanityfeature";
 import Video from "./components/video";
+import { Carousel1 } from "./components/carousel";
 
 export default async function Home() {
   const data = await MyblogPage()
@@ -14,12 +13,13 @@ export default async function Home() {
 <div >
 <Homepage/>
 <Carousel1/>
+<HomePage data={data}/>
 <FeaturePage/>
-<Myblog data={data}/>
+
 <Bestplaces/>
 <Video/>
 <SocialCategory/>
-<Footer/>
+
 </div>
   );
 }

@@ -1,15 +1,50 @@
 "use client";
-import Image from "next/image";
-import { useState } from "react";
+import React, { useState } from "react";
+import Link from "next/link";
+import { client } from "@/sanity/lib/client";
 
-export const Myblog = ({ data }: { data: { blogtitle: string; paragraph: string; imageUrl: string }[] }) => {
+interface BlogPost {
+  blogtitle: string;
+  paragraph: string;
+  imageUrl: string;
+  slug: {
+    current: string;
+  };
+}
+
+interface HomePageProps {
+  data: BlogPost[];
+}
+
+export async function getStaticProps() {
+  const data = await client.fetch(
+    `*[_type == "bloglatest"]{
+      blogtitle,
+      paragraph,
+      "imageUrl": image.asset->url,
+      slug
+    }`
+  );
+
+  return {
+    props: {
+      data,
+    },
+  };
+}
+
+const HomePage: React.FC<HomePageProps> = ({ data }) => {
   const [pageNo, setPageNo] = useState(1);
-  const itemsPerPage = 4;
+  const itemsPerPage = 6;
   const totalPage = Math.ceil(data.length / itemsPerPage);
   const startIndex = (pageNo - 1) * itemsPerPage;
   const currentData = data.slice(startIndex, startIndex + itemsPerPage);
 
-  const getPaginationRange = (currentPage: number, totalPages: number, maxVisiblePages = 5) => {
+  const getPaginationRange = (
+    currentPage: number,
+    totalPages: number,
+    maxVisiblePages = 5
+  ) => {
     const half = Math.floor(maxVisiblePages / 2);
     let start = Math.max(1, currentPage - half);
     let end = Math.min(totalPages, currentPage + half);
@@ -26,81 +61,74 @@ export const Myblog = ({ data }: { data: { blogtitle: string; paragraph: string;
   const paginationNumbers = getPaginationRange(pageNo, totalPage);
 
   return (
-<div id="blog" className="mt-16">
-  <h1 className="text-[23px] md:text-[26px] mt-11 hover:scale-110 transition duration-300 hover:underline mb-12 font-semibold text-center sm:hover:scale-105 sm:transition sm:duration-500">
-    My Latest Blog
-  </h1>
-  <div className="flex justify-center">
-    <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-1 gap-6 px-4 mx-0 es:mx-16 md:mx-24 lg:mx-32 xl:mx-80">
-      {currentData.map((val, i) => (
-        <div
-          key={i}
-          className="flex flex-col sm:flex-row border rounded-lg shadow-lg overflow-hidden "
-        >
-          {/* Image Section */}
-          <Image
-            src={val.imageUrl || "/default-image.jpg"} // Default image for fallback
-            alt={val.blogtitle || "Blog Image"}
-            className="w-full sm:w-[40%] sm:h-auto aspect-video object-cover hover:scale-105 transition duration-300 rounded-xl"
-            width={1000}
-            height={1000}
-            loading="lazy"
-          />
-          
-          {/* Content Section */}
-          <div className="p-4 flex flex-col justify-between space-y-2 ">
-            <h2 className="text-[16px] font-bold hover:scale-105 transition duration-500">{val.blogtitle}</h2>
-            <h4 className="text-[13px] hover:scale-105 transition duration-500">
-              <span className="text-yellow-500 underline ">Post</span> by Hamza
-            </h4>
-            <h3 className="text-[12px] hover:scale-105 transition duration-500">
-              4 Dec, 2024 <span className="text-yellow-500">50 comments</span>
-            </h3>
-            <p className="text-sm text-gray-600">{val.paragraph}</p>
-            <button className="text-yellow-400 font-semibold hover:scale-105 transition duration-500 text-[13px] hover:underline">
-              READ MORE .....
-            </button>
+    <div className="px-4 mx-auto max-w-screen-lg">
+      <h1 className="text-center text-3xl mt-12 mb-6">My Latest Blog</h1>
+
+      {/* Blog Posts Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+        {currentData.map((val, i) => (
+          <div
+            key={i}
+            className="relative border rounded-lg shadow-lg overflow-hidden flex flex-col"
+          >
+            <img
+              src={val.imageUrl || "/default-image.jpg"}
+              alt={val.blogtitle}
+              className="w-full h-64 object-cover"
+            />
+            <div className="p-4 flex-grow flex flex-col justify-between">
+              <div>
+                <h2 className="font-bold text-xl">{val.blogtitle}</h2>
+                <p className="text-sm text-gray-600 mb-8">{val.paragraph}</p>
+              </div>
+              <Link
+                className="absolute bottom-4  text-yellow-500 hover:underline"
+                href={`/blog/${val.slug.current}`}
+              >
+                Click me for More Information
+              </Link>
+            </div>
           </div>
-        </div>
-      ))}
-    </div>
-  </div>
-
-
+        ))}
+      </div>
 
       {/* Pagination */}
-      <div className="flex items-center justify-center mt-8 space-x-4">
+      <div className="flex justify-center mt-8">
+        {/* Previous Button */}
         {pageNo > 1 && (
           <button
-            className="px-4 py-2 text-black rounded border"
+            className="px-4 py-2 text-black border rounded mr-2"
             onClick={() => setPageNo(pageNo - 1)}
-            aria-label="Previous Page"
           >
-            {"<"}
+            &lt;
           </button>
         )}
+
+        {/* Pagination Numbers */}
         {paginationNumbers.map((page) => (
           <button
             key={page}
-            className={`px-3 py-2 rounded font-semibold ${
+            className={`px-3 py-2 rounded mx-1 ${
               page === pageNo ? "bg-blue-500 text-white" : "text-black"
-            } hover:font-extrabold`}
+            }`}
             onClick={() => setPageNo(page)}
-            aria-label={`Page ${page}`}
           >
             {page}
           </button>
         ))}
+
+        {/* Next Button */}
         {pageNo < totalPage && (
           <button
-            className="px-4 py-2 text-black rounded border"
+            className="px-4 py-2 text-black border rounded ml-2"
             onClick={() => setPageNo(pageNo + 1)}
-            aria-label="Next Page"
           >
-            {">"}
+            &gt;
           </button>
         )}
       </div>
     </div>
   );
 };
+
+export default HomePage;

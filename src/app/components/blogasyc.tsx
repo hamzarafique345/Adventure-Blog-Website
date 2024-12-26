@@ -7,7 +7,8 @@ export async function MyblogPage() {
       `*[_type == "bloglatest"]{
         blogtitle,
         paragraph,
-        "imageUrl": image.asset->url
+        "imageUrl": image.asset->url,
+        slug
       }`)
   
 

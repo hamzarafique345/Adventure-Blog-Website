@@ -2,6 +2,7 @@ import React from 'react';
 import { client } from '@/sanity/lib/client';
 import { FaTwitter, FaFacebook, FaInstagram, FaYoutube } from 'react-icons/fa';
 import Link from 'next/link';
+import Image from 'next/image';
 
 interface BlogPost {
   blogtitle: string;
@@ -9,8 +10,10 @@ interface BlogPost {
   imageUrl: string;
 }
 
-const BlogPostPage = async ({ params }: { params: { id: string } }) => {
-  const { id } = params;
+const BlogPostPage = async ({ params }: { params: Promise<{ id: string }> }) => {
+  // Resolve params as a Promise
+  const resolvedParams = await params;
+  const { id } = resolvedParams;
 
   if (!id) {
     return <div>Error: Invalid ID</div>;
@@ -84,26 +87,19 @@ const BlogPostPage = async ({ params }: { params: { id: string } }) => {
         {/* Blog Content */}
         <div className="max-w-screen-lg mx-auto mt-12 p-6 rounded-lg shadow-lg pb-10">
           <h1 className="text-4xl font-bold mb-6 text-center text-gray-900">{post.blogtitle}</h1>
-          <img
+          <Image
             src={post.imageUrl || '/default-image.jpg'}
             alt={post.blogtitle}
             className="w-full h-96 object-cover rounded-lg mb-6"
+            width={1000}
+            height={1000}
           />
           <p className="text-lg leading-relaxed mb-4">
-            <strong>Lorem ipsum dolor sit amet,</strong> consectetur adipiscing elit. Vivamus
-            lacinia odio vitae vestibulum vestibulum. Cras venenatis euismod malesuada.
-          </p>
-          <p className="text-lg leading-relaxed">
-            Nulla facilisi. Fusce nec tellus non mi molestie gravida. Nam auctor massa nec venenatis pretium. Proin id
-            tellus convallis, mattis arcu ut, ultrices nisl. Duis tristique lorem a magna viverra, id ultrices mauris
-            accumsan.
-          </p>
-          <p className="text-lg leading-relaxed">
-            Sed vel fermentum elit. Integer at posuere elit, sed ornare erat. Donec non erat nec lectus gravida faucibus
-            at non libero. In in fermentum odio. Duis efficitur tincidunt sapien quis convallis. Mauris a felis at dolor
-            vehicula luctus sed sit amet lorem. Donec scelerisque arcu velit, quis laoreet mi dignissim non.
-          </p>
-        </div>
+            <strong>{post.paragraph.slice(0, 100)}...</strong>
+
+            Lorem ipsum dolor sit, amet consectetur adipisicing elit. Voluptatibus in accusantium quas doloremque veniam ducimus, omnis repellendus nostrum delectus, nisi labore, voluptate sint. Ipsa illo temporibus ea atque. Cupiditate, delectus maxime. Ipsa, culpa rerum?          </p>
+     <br />
+     Lorem ipsum dolor sit amet, consectetur adipisicing elit. Fuga aspernatur laudantium nobis aperiam, nemo quaerat sequi praesentium doloribus esse, ex voluptates aliquam deleniti voluptatibus. Quia ab officia quaerat, suscipit eum vitae in architecto incidunt. Magnam facilis quidem beatae maiores officia ratione animi laboriosam temporibus numquam qui, esse voluptas, dolor eveniet. Magni facilis numquam, explicabo nihil similique unde voluptate ex ipsa eligendi assumenda neque, ratione magnam adipisci. Id, atque voluptatibus? Officiis, temporibus ipsa itaque eius vitae quod saepe iusto! Distinctio aliquam nulla at necessitatibus rem? Dolorum omnis amet accusantium corrupti beatae molestiae fugiat officia incidunt sapiente voluptatem, sunt provident quasi.   </div>
       </div>
     );
   } catch (error) {

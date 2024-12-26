@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { client } from "@/sanity/lib/client";
+import Image from "next/image";
 
 interface BlogPost {
   blogtitle: string;
@@ -71,10 +72,12 @@ const HomePage: React.FC<HomePageProps> = ({ data }) => {
             key={i}
             className="relative border rounded-lg shadow-lg overflow-hidden flex flex-col"
           >
-            <img
+            <Image
               src={val.imageUrl || "/default-image.jpg"}
               alt={val.blogtitle}
               className="w-full h-64 object-cover"
+              width={1000}
+              height={1000}
             />
             <div className="p-4 flex-grow flex flex-col justify-between">
               <div>

@@ -3,6 +3,7 @@ import { client } from '@/sanity/lib/client';
 import { FaTwitter, FaFacebook, FaInstagram, FaYoutube } from 'react-icons/fa';
 import Link from 'next/link';
 import Image from 'next/image';
+import CommentSection from '@/app/components/comment';
 
 interface BlogPost {
   blogtitle: string;
@@ -100,7 +101,8 @@ const BlogPostPage = async ({ params }: { params: Promise<{ id: string }> }) => 
             Lorem ipsum dolor sit, amet consectetur adipisicing elit. Voluptatibus in accusantium quas doloremque veniam ducimus, omnis repellendus nostrum delectus, nisi labore, voluptate sint. Ipsa illo temporibus ea atque. Cupiditate, delectus maxime. Ipsa, culpa rerum?          </p>
      <br />
      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Fuga aspernatur laudantium nobis aperiam, nemo quaerat sequi praesentium doloribus esse, ex voluptates aliquam deleniti voluptatibus. Quia ab officia quaerat, suscipit eum vitae in architecto incidunt. Magnam facilis quidem beatae maiores officia ratione animi laboriosam temporibus numquam qui, esse voluptas, dolor eveniet. Magni facilis numquam, explicabo nihil similique unde voluptate ex ipsa eligendi assumenda neque, ratione magnam adipisci. Id, atque voluptatibus? Officiis, temporibus ipsa itaque eius vitae quod saepe iusto! Distinctio aliquam nulla at necessitatibus rem? Dolorum omnis amet accusantium corrupti beatae molestiae fugiat officia incidunt sapiente voluptatem, sunt provident quasi.   </div>
-      </div>
+    <CommentSection/>  </div>
+      
     );
   } catch (error) {
     console.error('Error fetching blog post:', error);
